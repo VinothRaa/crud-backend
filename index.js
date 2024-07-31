@@ -1,15 +1,17 @@
 const express = require('express');
 const app = express();
-const multer = require('multer');
 const productRoute = require('./routes/prductRoutes.js');
 const connectDB = require('./db.js');
 const port = process.env.PORT || 3000;
 
 //middleware
-const upload = multer();
-app.use(upload.none());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+const path = require('path');
+
+// image stored in local(public folder)
+app.use('/static', express.static('public'));
 
 //routes
 app.use('/products', productRoute);

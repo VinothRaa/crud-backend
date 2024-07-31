@@ -1,7 +1,23 @@
 const Product = require('../models/product.model.js');
+const path = require('path')
+
 
 const createProduct = async (req, res) => {
     try {
+        if (!req.file && !req.body.url) {
+            return res.status(404).json({ message: 'Either File or URL should be present', status: 'error' });
+        }
+
+        if (req.file && req.body.url) {
+            return res.status(404).json({ message: 'Cannot send both File and URL', status: 'error' });
+        }
+
+        if (req.body.url && !req.file) {
+            req.body.image = new URL(req.body.url);
+        }
+
+        req.body.image = req.body.url ? req.body.url : `http://localhost:3000/static/${req.file?.filename}`;
+
         const createProduct = await Product.create(req.body);
         res.status(200).json({
             data: createProduct,
@@ -9,7 +25,7 @@ const createProduct = async (req, res) => {
             status: 'success'
         });
     } catch (error) {
-        res.status(500).json({ message: 'Failed to Create Product!', status: 'error' });
+        res.status(500).json({ message: 'Failed to Create Product!', status: 'error', error });
     }
 };
 
@@ -43,6 +59,20 @@ const getProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
+        if (!req.file && !req.body.url) {
+            return res.status(404).json({ message: 'Either File or URL should be present', status: 'error' });
+        }
+
+        if (req.file && req.body.url) {
+            return res.status(404).json({ message: 'Cannot send both File and URL', status: 'error' });
+        }
+
+        if (req.body.url && !req.file) {
+            req.body.image = new URL(req.body.url);
+        }
+
+        req.body.image = req.body.url ? req.body.url : `http://localhost:3000/static/${req.file?.filename}`;
+
         const { id } = req.params;
         const updateProduct = await Product.findByIdAndUpdate(id, req.body);
 

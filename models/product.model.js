@@ -12,6 +12,13 @@ const productSchema = mongoose.Schema(
             required: true,
             default: 0
         },
+    
+        qtyType: {
+            type: String,
+            enum: ['packet', 'gram', 'liter'],
+            required: true,
+            default: 'gram'
+        },
 
         price: {
             type: Number,
